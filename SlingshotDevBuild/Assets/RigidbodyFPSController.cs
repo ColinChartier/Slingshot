@@ -15,6 +15,13 @@ public class RigidbodyFPSController : MonoBehaviour {
 	public float jumpHeight = 2.0f;
 	private bool grounded = false;
 
+	// New movement
+	public GameObject groundcheck;
+	private float xInput;
+	private float zInput;
+	private float maxGroundSpeed;
+	private Vector3 desired;
+
 	// Slingshot
 	public bool line1;
 	public bool line2;
@@ -46,10 +53,17 @@ public class RigidbodyFPSController : MonoBehaviour {
 		rightTentacle = rightHand.GetComponent<LineRenderer>();
 		leftTentacle.enabled = false;
 		rightTentacle.enabled = false;
+
+		maxGroundSpeed = new Vector3(speed, 0, speed).magnitude;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		// New movement
+		xInput = Input.GetAxis("Horizontal");
+		zInput = Input.GetAxis("Vertical");
+		desired = transform.TransformDirection(new Vector3(xInput, 0, zInput));
+
 		// Slingshot Modifications
 		// Left click
 		if (!hooked && !line1) {
@@ -152,25 +166,19 @@ public class RigidbodyFPSController : MonoBehaviour {
 
 	void FixedUpdate() {
 		if (grounded) {
-			// Calculate how fast we should be moving
-			Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-			targetVelocity = transform.TransformDirection(targetVelocity);
-			targetVelocity *= speed;
-
-			// Apply a force that attempts to reach our target velocity
-			Vector3 velocity = rigidbody.velocity;
-			Vector3 velocityChange = (targetVelocity - velocity);
-			velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-			velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-			velocityChange.y = 0;
-			rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
-
+			if (rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0) {
+				rigidbody.velocity = (rigidbody.velocity / 1.1f) + desired * speed;
+			} else {
+				rigidbody.velocity = desired * speed;
+			}
 			// Jump
 			if (canJump && Input.GetButton("Jump")) {
-				rigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
+				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
 			}
+		} else {
+			rigidbody.velocity += desired / 15f;
 		}
-		
+
 		if (flinging) {
 			if (launch_dir.magnitude > 100) {
 				launch_dir = launch_dir * (90 / launch_dir.magnitude);
@@ -194,10 +202,31 @@ public class RigidbodyFPSController : MonoBehaviour {
 		rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
 
 		grounded = false;
+
+		/*if (grounded) {
+			// Calculate how fast we should be moving
+			Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+			targetVelocity = transform.TransformDirection(targetVelocity);
+			targetVelocity *= speed;
+
+			// Apply a force that attempts to reach our target velocity
+			Vector3 velocity = rigidbody.velocity;
+			Vector3 velocityChange = (targetVelocity - velocity);
+			velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+			velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+			velocityChange.y = 0;
+			rigidbody.AddForce(velocityChange, ForceMode.VelocityChange); 
+		}*/
+		// Old force-based movement
 	}
 
-	void OnCollisionStay() {
-		grounded = true;
+	void OnCollisionStay(Collision info) {
+		ContactPoint contact = info.contacts[0];
+		if (contact.point.y < groundcheck.transform.position.y) {
+			grounded = true;
+		} else {
+			rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, contact.normal);
+		}
 	}
 
 	float CalculateJumpVerticalSpeed() {
