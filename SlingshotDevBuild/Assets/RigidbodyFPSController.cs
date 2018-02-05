@@ -41,6 +41,9 @@ public class RigidbodyFPSController : MonoBehaviour {
 	private LineRenderer leftTentacle;
 	private LineRenderer rightTentacle;
 
+    public GameObject hitImage;
+    public GameObject nonhitImage;
+
 
 	// Use this for initialization
 	void Start () {
@@ -64,9 +67,20 @@ public class RigidbodyFPSController : MonoBehaviour {
 		zInput = Input.GetAxis("Vertical");
 		desired = transform.TransformDirection(new Vector3(xInput, 0, zInput));
 
-		// Slingshot Modifications
-		// Left click
-		if (!hooked && !line1) {
+
+        //crosshair changing  per frame if hit or not
+        RaycastHit hit;
+        bool raycastSuccess = false;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100))
+        {
+            raycastSuccess = true;
+        }
+        hitImage.SetActive(raycastSuccess);
+        nonhitImage.SetActive(!raycastSuccess);
+
+        // Slingshot Modifications
+        // Left click
+        if (!hooked && !line1) {
 			if (Input.GetButtonDown("Fire1")) {
 				line1 = SendLine(out coord1);
 				Debug.Log("Send line 1");
@@ -100,8 +114,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 		// Hook
 		if (!hooked) {
 			if (Input.GetButtonDown("Fire3")) {
-				RaycastHit hit;
-				if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit)) {
+				if (raycastSuccess) {
 					hook_pos = hit.point;
 					hook_distance = (transform.position - hook_pos).magnitude;
 					hooked = true;
