@@ -153,7 +153,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 		Debug.Log("Launch");
 		Vector3 to_line1 = coord1 - transform.position;
 		Vector3 to_line2 = coord2 - transform.position;
-		launch_dir = to_line1 + to_line2;
+		launch_dir = to_line1 + to_line2 + Vector3.up * 2; //add a bit of "up" to clear verticals
 		flinging = true;
 		line1 = false;
 		line2 = false;
