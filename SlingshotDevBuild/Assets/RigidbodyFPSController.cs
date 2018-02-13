@@ -90,7 +90,6 @@ public class RigidbodyFPSController : MonoBehaviour {
         if (!hooked && !line1) {
 			if (Input.GetButtonDown("Fire1")) {
 				line1 = SendLine(out coord1);
-				Debug.Log("Send line 1");
 			}
 		} else {
 			if (Input.GetButtonUp("Fire1")) {
@@ -106,13 +105,11 @@ public class RigidbodyFPSController : MonoBehaviour {
 		if (!hooked && !line2) {
 			if (Input.GetButtonDown("Fire2")) {
 				line2 = SendLine(out coord2);
-				Debug.Log("Send line 2");
 			}
 		} else {
 			if (Input.GetButtonUp("Fire2")) {
 				if (!line1) {
 					line2 = false;
-					Debug.Log("Detach line 2");
 				} else {
 					LaunchPlayer();
 				}
