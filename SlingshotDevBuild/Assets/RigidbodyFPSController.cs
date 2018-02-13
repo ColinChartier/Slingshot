@@ -9,7 +9,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 
 	private new Rigidbody rigidbody;
 	public float speed = 10.0f;
-	public float gravity = 10.0f;
+	public float gravity = 40.0f;
 	public float maxVelocityChange = 10.0f;
 	public bool canJump = true;
 	public float jumpHeight = 2.0f;
@@ -27,17 +27,18 @@ public class RigidbodyFPSController : MonoBehaviour {
 	public bool line2;
 	private bool flinging;
 	private Vector3 launch_dir; // coord1 + coord2
+
 	private Vector3 coord1;
 	private Vector3 coord2;
 
-	// Swinging hook
-	public bool hooked;
-	private Vector3 hook_pos;
-	private float hook_distance;
+	private float coord1InitialDistance;
+	private float coord2InitialDistance;
 
 	// Ropes
-	public Component leftHand;
-	public Component rightHand;
+	public bool leftHandEnabled = true;
+	public bool rightHandEnabled = true;
+	public GameObject leftHand;
+	public GameObject rightHand;
 	private LineRenderer leftTentacle;
 	private LineRenderer rightTentacle;
 
@@ -52,8 +53,8 @@ public class RigidbodyFPSController : MonoBehaviour {
 		rigidbody.useGravity = false;
 		Cursor.lockState = CursorLockMode.Locked;
 
-		leftTentacle = leftHand.GetComponent<LineRenderer>();
-		rightTentacle = rightHand.GetComponent<LineRenderer>();
+		leftTentacle = leftHand.GetComponentInChildren<LineRenderer>();
+		rightTentacle = rightHand.GetComponentInChildren<LineRenderer>();
 		leftTentacle.enabled = false;
 		rightTentacle.enabled = false;
 
@@ -84,12 +85,16 @@ public class RigidbodyFPSController : MonoBehaviour {
         }
         hitImage.SetActive(raycastSuccess);
         nonhitImage.SetActive(!raycastSuccess);
+		leftHand.SetActive (leftHandEnabled);
+		rightHand.SetActive (rightHandEnabled);
 
         // Slingshot Modifications
         // Left click
-        if (!hooked && !line1) {
-			if (Input.GetButtonDown("Fire1")) {
+		if (!line1) {
+			if (Input.GetButtonDown("Fire1") && leftHandEnabled && raycastSuccess) {
 				line1 = SendLine(out coord1);
+				coord1InitialDistance = (transform.position - coord1).magnitude;
+				JumpInitialLine (coord1);
 			}
 		} else {
 			if (Input.GetButtonUp("Fire1")) {
@@ -102,9 +107,11 @@ public class RigidbodyFPSController : MonoBehaviour {
 			}
 		}
 		// Right click
-		if (!hooked && !line2) {
-			if (Input.GetButtonDown("Fire2")) {
+		if (!line2) {
+			if (Input.GetButtonDown("Fire2") && rightHandEnabled && raycastSuccess) {
 				line2 = SendLine(out coord2);
+				coord2InitialDistance = (transform.position - coord2).magnitude;
+				JumpInitialLine (coord2);
 			}
 		} else {
 			if (Input.GetButtonUp("Fire2")) {
@@ -116,25 +123,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 			}
 		}
 		// Hook
-		if (!hooked) {
-			if (Input.GetButtonDown("Fire3")) {
-				if (raycastSuccess) {
-					hook_pos = hit.point;
-					hook_distance = (transform.position - hook_pos).magnitude;
-					hooked = true;
-				}
-			}
-		} else {
-			if (Input.GetButtonUp("Fire3")) {
-				hooked = false;
-			}
-		}
-		if (hooked) {
-			DisplayHook();
-		} else {
-			DisplayRope();
-		}
-		
+		DisplayRope();
 	}
 
 	private bool SendLine(out Vector3 coord) {
@@ -153,17 +142,19 @@ public class RigidbodyFPSController : MonoBehaviour {
 		Debug.Log("Launch");
 		Vector3 to_line1 = coord1 - transform.position;
 		Vector3 to_line2 = coord2 - transform.position;
-		launch_dir = to_line1 + to_line2 + Vector3.up * 2; //add a bit of "up" to clear verticals
+		launch_dir = to_line1 + to_line2;
 		flinging = true;
 		line1 = false;
 		line2 = false;
 	}
 
-	private void DisplayHook() {
-		leftTentacle.enabled = hooked;
-		leftTentacle.positionCount = 2;
-		leftTentacle.SetPosition(0, leftHand.transform.position);
-		leftTentacle.SetPosition(1, hook_pos);
+	private void JumpInitialLine(Vector3 position) {
+		if (grounded) {
+			// we "hop" towards the first hook to get you off of the ground, to facilitate swinging
+			Vector3 jump_to = (position - transform.position).normalized * 20 + Vector3.up * 3;
+			rigidbody.velocity = rigidbody.velocity + jump_to;
+			grounded = false;
+		}
 	}
 
 	private void DisplayRope() {
@@ -203,38 +194,28 @@ public class RigidbodyFPSController : MonoBehaviour {
 				launch_dir = launch_dir * (30 / launch_dir.magnitude);
 			}
 
-			rigidbody.velocity = new Vector3(launch_dir.x, launch_dir.y + 5, launch_dir.z);
+			rigidbody.velocity = launch_dir;
 			flinging = false;
 			grounded = false;
-		}
-
-		if (hooked) {
-			Vector3 heading = transform.position - hook_pos;
-			if (heading.magnitude >= hook_distance) { // Edge of distance, swing
-				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
-			}
+			line1 = false;
+			line2 = false;
 		}
 
 		// We apply gravity manually for more tuning control
 		rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
+		if (line1) {
+			Vector3 heading = transform.position - coord1;
+			if (heading.magnitude >= coord1InitialDistance + 50) { // Edge of distance, swing
+				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
+			}
+		}
+		if (line2) {
+			Vector3 heading = transform.position - coord2;
+			if (heading.magnitude >= coord2InitialDistance + 50) { // Edge of distance, swing
+				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
+			}
+		}
 
-		grounded = false;
-
-		/*if (grounded) {
-			// Calculate how fast we should be moving
-			Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-			targetVelocity = transform.TransformDirection(targetVelocity);
-			targetVelocity *= speed;
-
-			// Apply a force that attempts to reach our target velocity
-			Vector3 velocity = rigidbody.velocity;
-			Vector3 velocityChange = (targetVelocity - velocity);
-			velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-			velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-			velocityChange.y = 0;
-			rigidbody.AddForce(velocityChange, ForceMode.VelocityChange); 
-		}*/
-		// Old force-based movement
 	}
 
 	void OnCollisionStay(Collision info) {
@@ -243,6 +224,12 @@ public class RigidbodyFPSController : MonoBehaviour {
 			grounded = true;
 		} else {
 			rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, contact.normal);
+		}
+	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.tag == "gain-tentacle") {
+			rightHandEnabled = leftHandEnabled = true;
 		}
 	}
 
