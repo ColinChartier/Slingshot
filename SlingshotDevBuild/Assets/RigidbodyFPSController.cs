@@ -151,7 +151,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 	private void JumpInitialLine(Vector3 position) {
 		if (grounded) {
 			// we "hop" towards the first hook to get you off of the ground, to facilitate swinging
-			Vector3 jump_to = (position - transform.position).normalized * 20 + Vector3.up * 3;
+			Vector3 jump_to = (position - transform.position).normalized * 10 + Vector3.up * 3;
 			rigidbody.velocity = rigidbody.velocity + jump_to;
 			grounded = false;
 		}
@@ -174,9 +174,12 @@ public class RigidbodyFPSController : MonoBehaviour {
 
 	void FixedUpdate() {
 		if (grounded) {
+            // When on the ground, check if greater than max speed or player not inputting movement
 			if (rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0) {
+                // Slide to a stop
 				rigidbody.velocity = (rigidbody.velocity / 1.1f) + desired * speed;
 			} else {
+                // Not going fast enough, just move at a direct speed
 				rigidbody.velocity = desired * speed;
 			}
 			// Jump
@@ -197,21 +200,21 @@ public class RigidbodyFPSController : MonoBehaviour {
 			rigidbody.velocity = launch_dir;
 			flinging = false;
 			grounded = false;
-			line1 = false;
-			line2 = false;
 		}
 
 		// We apply gravity manually for more tuning control
 		rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
+        grounded = false;
+
 		if (line1) {
 			Vector3 heading = transform.position - coord1;
-			if (heading.magnitude >= coord1InitialDistance + 50) { // Edge of distance, swing
+			if (heading.magnitude >= coord1InitialDistance) { // Edge of distance, swing
 				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
 			}
 		}
 		if (line2) {
 			Vector3 heading = transform.position - coord2;
-			if (heading.magnitude >= coord2InitialDistance + 50) { // Edge of distance, swing
+			if (heading.magnitude >= coord2InitialDistance) { // Edge of distance, swing
 				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
 			}
 		}
