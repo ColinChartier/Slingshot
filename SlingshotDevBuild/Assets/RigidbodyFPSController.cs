@@ -62,6 +62,13 @@ public class RigidbodyFPSController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			if (Cursor.lockState == CursorLockMode.None) {
+				Cursor.lockState = CursorLockMode.Locked;
+			} else {
+				Cursor.lockState = CursorLockMode.None;
+			}
+		}
 		// New movement
 		xInput = Input.GetAxis("Horizontal");
 		zInput = Input.GetAxis("Vertical");
@@ -71,7 +78,7 @@ public class RigidbodyFPSController : MonoBehaviour {
         //crosshair changing  per frame if hit or not
         RaycastHit hit;
         bool raycastSuccess = false;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100))
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag != "Un-tetherable")
         {
             raycastSuccess = true;
         }
@@ -135,7 +142,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 
 	private bool SendLine(out Vector3 coord) {
 		RaycastHit hit;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100)) {
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag != "Un-tetherable") {
 			Debug.Log("Line attached");
 			coord = hit.point;
 			return true;
