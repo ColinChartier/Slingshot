@@ -9,7 +9,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 	private new Rigidbody rigidbody;
 	public float speed = 10.0f;
-	public float gravity = 20.0f;
+	public float gravity = 30.0f;
 	public float maxVelocityChange = 10.0f;
 	public bool canJump = true;
 	public float jumpHeight = 2.0f;
@@ -23,13 +23,17 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private Vector3 desired;
 
 	// Slingshot
+	public GameObject hit_prefab;
 	public bool line1;
 	public bool line2;
 	private bool flinging;
 	private Vector3 launch_dir; // coord1 + coord2
 
-	private Vector3 coord1;
-	private Vector3 coord2;
+	private GameObject right_hand; // replaces coord1
+	private GameObject left_hand;  // replaces coord2
+
+	//private Vector3 coord1;
+	//private Vector3 coord2;
 
 	private float coord1InitialDistance;
 	private float coord2InitialDistance;
@@ -69,7 +73,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		//crosshair changing  per frame if hit or not
 		RaycastHit hit;
 		bool raycastSuccess = false;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100)) {
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag != "Un-tetherable") {
 			raycastSuccess = true;
 		}
 		hitImage.SetActive(raycastSuccess);
@@ -79,13 +83,14 @@ public class FinalPlayerMovement : MonoBehaviour {
 		// Left click
 		if (!line1) {
 			if (Input.GetButtonDown("Fire1") && raycastSuccess) {
-				line1 = SendLine(out coord1);
-				coord1InitialDistance = (transform.position - coord1).magnitude;
+				line1 = SendLine(out left_hand);
+				coord1InitialDistance = (transform.position - left_hand.transform.position).magnitude;
 			}
 		} else {
 			if (Input.GetButtonUp("Fire1")) {
 				if (!line2) {
 					line1 = false;
+					DestroyObject(left_hand);
 					Debug.Log("Detach line 1");
 				} else {
 					LaunchPlayer();
@@ -95,13 +100,14 @@ public class FinalPlayerMovement : MonoBehaviour {
 		// Right click
 		if (!line2) {
 			if (Input.GetButtonDown("Fire2") && raycastSuccess) {
-				line2 = SendLine(out coord2);
-				coord2InitialDistance = (transform.position - coord2).magnitude;
+				line2 = SendLine(out right_hand);
+				coord2InitialDistance = (transform.position - right_hand.transform.position).magnitude;
 			}
 		} else {
 			if (Input.GetButtonUp("Fire2")) {
 				if (!line1) {
 					line2 = false;
+					DestroyObject(right_hand);
 				} else {
 					LaunchPlayer();
 				}
@@ -154,7 +160,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		grounded = false;
 
 		if (line1) {
-			Vector3 heading = transform.position - coord1;
+			Vector3 heading = transform.position - left_hand.transform.position;
 			if (heading.magnitude >= coord1InitialDistance + 5) { // Edge of distance, swing
 				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
 			}
@@ -163,7 +169,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 			}
 		}
 		if (line2) {
-			Vector3 heading = transform.position - coord2;
+			Vector3 heading = transform.position - right_hand.transform.position;
 			if (heading.magnitude >= coord2InitialDistance + 5) { // Edge of distance, swing
 				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
 			}
@@ -188,26 +194,30 @@ public class FinalPlayerMovement : MonoBehaviour {
 		return Mathf.Sqrt(2 * jumpHeight * gravity);
 	}
 
-	private bool SendLine(out Vector3 coord) {
+	private bool SendLine(out GameObject hit_object) {
 		RaycastHit hit;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100)) {
 			Debug.Log("Line attached");
-			coord = hit.point;
+			// Add hand object as child of hit object
+			hit_object = Instantiate(hit_prefab, hit.point, new Quaternion(), hit.transform);
+			hit_object.transform.localScale = new Vector3(0.5f/hit.transform.localScale.x, 0.5f/hit.transform.localScale.y, 0.5f/hit.transform.localScale.z);
 			return true;
 		} else {
-			coord = new Vector3(0, 0, 0);
+			hit_object = null;
 			return false;
 		}
 	}
 
 	private void LaunchPlayer() {
 		Debug.Log("Launch");
-		Vector3 to_line1 = coord1 - transform.position;
-		Vector3 to_line2 = coord2 - transform.position;
+		Vector3 to_line1 = right_hand.transform.position - transform.position;
+		Vector3 to_line2 = left_hand.transform.position - transform.position;
 		launch_dir = to_line1 + to_line2;
 		flinging = true;
 		line1 = false;
 		line2 = false;
+		DestroyObject(left_hand);
+		DestroyObject(right_hand);
 	}
 
 	private void DisplayRope() {
@@ -216,12 +226,12 @@ public class FinalPlayerMovement : MonoBehaviour {
 		if (line1) {
 			leftTentacle.positionCount = 2;
 			leftTentacle.SetPosition(0, leftHand.transform.position);
-			leftTentacle.SetPosition(1, coord1);
+			leftTentacle.SetPosition(1, left_hand.transform.position);
 		}
 		if (line2) {
 			rightTentacle.positionCount = 2;
 			rightTentacle.SetPosition(0, rightHand.transform.position);
-			rightTentacle.SetPosition(1, coord2);
+			rightTentacle.SetPosition(1, right_hand.transform.position);
 		}
 	}
 }
