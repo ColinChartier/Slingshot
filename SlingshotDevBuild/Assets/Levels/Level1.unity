@@ -2048,6 +2048,12 @@ Prefab:
       propertyPath: nonhitImage
       value: 
       objectReference: {fileID: 1140541885}
+    - target: {fileID: 114371900415091688, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: hit_prefab
+      value: 
+      objectReference: {fileID: 1262232886340536, guid: ed5507e5903d6324894ac7f0605c2422,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 45f42fc33dbbbf84587d7171307ba17c, type: 2}
   m_IsPrefabParent: 0
