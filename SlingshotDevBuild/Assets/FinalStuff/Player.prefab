@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114371900415091688}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -278,11 +278,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  gravity: 20
+  gravity: 30
   maxVelocityChange: 10
   canJump: 1
   jumpHeight: 2
   groundcheck: {fileID: 1567247081224650}
+  hit_prefab: {fileID: 0}
   line1: 0
   line2: 0
   leftHand: {fileID: 4971792430924484}
@@ -517,7 +518,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.6
+  m_Height: 2.2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

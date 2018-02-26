@@ -8,11 +8,11 @@ using UnityEngine;
 public class FinalPlayerMovement : MonoBehaviour {
 
 	private new Rigidbody rigidbody;
-	public float speed = 10.0f;
+	public float speed = 15.0f;
 	public float gravity = 30.0f;
 	public float maxVelocityChange = 10.0f;
 	public bool canJump = true;
-	public float jumpHeight = 2.0f;
+	public float jumpHeight = 3.0f;
 	private bool grounded = false;
 
 	// New movement
@@ -21,6 +21,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private float zInput;
 	private float maxGroundSpeed;
 	private Vector3 desired;
+	private GameObject curr_cp; // Last checkpoint hit by player
 
 	// Slingshot
 	public GameObject hit_prefab;
@@ -73,7 +74,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		//crosshair changing  per frame if hit or not
 		RaycastHit hit;
 		bool raycastSuccess = false;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag != "Un-tetherable") {
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag != "Un-tetherable" && hit.transform.gameObject.tag != "Checkpoint") {
 			raycastSuccess = true;
 		}
 		hitImage.SetActive(raycastSuccess);
@@ -84,7 +85,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		if (!line1) {
 			if (Input.GetButtonDown("Fire1") && raycastSuccess) {
 				line1 = SendLine(out left_hand);
-				coord1InitialDistance = (transform.position - left_hand.transform.position).magnitude;
+				coord1InitialDistance = (transform.position - left_hand.transform.position).magnitude + 0.5f;
 			}
 		} else {
 			if (Input.GetButtonUp("Fire1")) {
@@ -101,7 +102,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		if (!line2) {
 			if (Input.GetButtonDown("Fire2") && raycastSuccess) {
 				line2 = SendLine(out right_hand);
-				coord2InitialDistance = (transform.position - right_hand.transform.position).magnitude;
+				coord2InitialDistance = (transform.position - right_hand.transform.position).magnitude + 0.5f;
 			}
 		} else {
 			if (Input.GetButtonUp("Fire2")) {
@@ -126,7 +127,20 @@ public class FinalPlayerMovement : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
-		if (grounded) {
+		if (transform.position.y <= -50) { // Player has fallen too far, reset to previous checkpoint.
+			if (curr_cp) {
+				transform.position = curr_cp.transform.position;
+			} else {
+				transform.position = new Vector3(0f, 2.5f, 0f);
+			}
+		}
+		if (grounded) { // Jump/bhop check
+			if (canJump && Input.GetButton("Jump")) {
+				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
+				grounded = false;
+			}
+		}
+		if (grounded) {  // Separate grounded check so player loses no speed upon hitting the ground if hopping
 			// When on the ground, check if greater than max speed or player not inputting movement
 			if (rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0) {
 				// Slide to a stop
@@ -135,12 +149,10 @@ public class FinalPlayerMovement : MonoBehaviour {
 				// Not going fast enough, just move at a direct speed
 				rigidbody.velocity = desired * speed;
 			}
-			// Jump
-			if (canJump && Input.GetButton("Jump")) {
-				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
-			}
+		} else if (rigidbody.velocity.magnitude < 20) {
+			rigidbody.velocity += desired / 2f;
 		} else {
-			rigidbody.velocity += desired / 15f;
+			rigidbody.velocity += desired / 10f;
 		}
 
 		if (flinging) {
@@ -161,19 +173,19 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 		if (line1) {
 			Vector3 heading = transform.position - left_hand.transform.position;
-			if (heading.magnitude >= coord1InitialDistance + 5) { // Edge of distance, swing
+			if (heading.magnitude >= coord1InitialDistance) { // Edge of distance, swing
 				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
 			}
-			if (heading.magnitude > coord1InitialDistance + 5) { // Too far, shorten rope
+			if (heading.magnitude > coord1InitialDistance) { // Too far, shorten rope
 				rigidbody.velocity -= heading.normalized * (heading.magnitude - coord1InitialDistance);
 			}
 		}
 		if (line2) {
 			Vector3 heading = transform.position - right_hand.transform.position;
-			if (heading.magnitude >= coord2InitialDistance + 5) { // Edge of distance, swing
+			if (heading.magnitude >= coord2InitialDistance) { // Edge of distance, swing
 				rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, heading);
 			}
-			if (heading.magnitude > coord2InitialDistance + 5) { // Too far, shorten rope
+			if (heading.magnitude > coord2InitialDistance) { // Too far, shorten rope
 				rigidbody.velocity -= heading.normalized * (heading.magnitude - coord2InitialDistance);
 			}
 		}
@@ -199,8 +211,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100)) {
 			Debug.Log("Line attached");
 			// Add hand object as child of hit object
-			hit_object = Instantiate(hit_prefab, hit.point, new Quaternion(), hit.transform);
-			hit_object.transform.localScale = new Vector3(0.5f/hit.transform.localScale.x, 0.5f/hit.transform.localScale.y, 0.5f/hit.transform.localScale.z);
+			hit_object = Instantiate(hit_prefab, hit.point, new Quaternion());
+			hit_object.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+			hit_object.transform.parent = hit.transform;
 			return true;
 		} else {
 			hit_object = null;
@@ -233,5 +246,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 			rightTentacle.SetPosition(0, rightHand.transform.position);
 			rightTentacle.SetPosition(1, right_hand.transform.position);
 		}
+	}
+
+	public void SetCP(GameObject cp) {
+		curr_cp = cp;
 	}
 }
