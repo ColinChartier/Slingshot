@@ -66,6 +66,15 @@ public class FinalPlayerMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//Allow people to remove their cursor (colin says: very important! I can't develop without this)
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			if (Cursor.lockState == CursorLockMode.None) {
+				Cursor.lockState = CursorLockMode.Locked;
+			} else {
+				Cursor.lockState = CursorLockMode.None;
+			}
+		}
+
 		// New movement
 		xInput = Input.GetAxis("Horizontal");
 		zInput = Input.GetAxis("Vertical");
