@@ -9,7 +9,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 	private new Rigidbody rigidbody;
 	public float speed = 15.0f;
-	public float gravity = 30.0f;
+	public float gravity = 50.0f;
 	public float maxVelocityChange = 10.0f;
 	public bool canJump = true;
 	public float jumpHeight = 3.0f;
