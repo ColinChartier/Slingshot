@@ -198,7 +198,6 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -288,8 +287,9 @@ MonoBehaviour:
   line2: 0
   leftHand: {fileID: 4971792430924484}
   rightHand: {fileID: 4423468220468364}
-  hitImage: {fileID: 0}
-  nonhitImage: {fileID: 0}
+  hitImage: {fileID: 1507116187026264, guid: c0c3ec161d916ee4dbc999a6f1cb43f6, type: 2}
+  nonhitImage: {fileID: 1735878838371294, guid: fc2afc927dbacd349905bbd395c3e762,
+    type: 2}
 --- !u!114 &114383952280505820
 MonoBehaviour:
   m_ObjectHideFlags: 1
