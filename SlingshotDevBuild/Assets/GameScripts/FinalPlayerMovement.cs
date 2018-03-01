@@ -33,6 +33,11 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private GameObject right_hand; // replaces coord1
 	private GameObject left_hand;  // replaces coord2
 
+	// Timer for releasing hands and not slingshotting
+	private double counter;
+	private bool released_left;
+	private bool released_right;
+
 	//private Vector3 coord1;
 	//private Vector3 coord2;
 
@@ -93,6 +98,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		// Left click
 		if (!line1) {
 			if (Input.GetButtonDown("Fire1") && raycastSuccess) {
+				released_left = false;
 				line1 = SendLine(out left_hand);
 				coord1InitialDistance = (transform.position - left_hand.transform.position).magnitude + 0.5f;
 			}
@@ -103,13 +109,15 @@ public class FinalPlayerMovement : MonoBehaviour {
 					DestroyObject(left_hand);
 					Debug.Log("Detach line 1");
 				} else {
-					LaunchPlayer();
+					released_left = true;
+					// LaunchPlayer(); (old)
 				}
 			}
 		}
 		// Right click
 		if (!line2) {
 			if (Input.GetButtonDown("Fire2") && raycastSuccess) {
+				released_right = false;
 				line2 = SendLine(out right_hand);
 				coord2InitialDistance = (transform.position - right_hand.transform.position).magnitude + 0.5f;
 			}
@@ -119,7 +127,8 @@ public class FinalPlayerMovement : MonoBehaviour {
 					line2 = false;
 					DestroyObject(right_hand);
 				} else {
-					LaunchPlayer();
+					released_right = true;
+					// LaunchPlayer(); (old)
 				}
 			}
 		}
@@ -145,6 +154,29 @@ public class FinalPlayerMovement : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
+		// Check for releasing arms
+		if (released_right || released_left) {
+			counter++;
+			if (counter >= 10) {
+				if (released_left) {
+					line1 = false;
+					DestroyObject(left_hand);
+					released_left = false;
+				} else if (released_right) {
+					line2 = false;
+					DestroyObject(right_hand);
+					released_right = false;
+				}
+				
+				counter = 0;
+			}
+			if (released_right && released_left) {
+				released_left = false;
+				released_right = false;
+				LaunchPlayer();
+			}
+		}
+
 		if (transform.position.y <= -50) { // Player has fallen too far, reset to previous checkpoint.
 			if (curr_cp) {
 				transform.position = curr_cp.transform.position;
@@ -182,7 +214,6 @@ public class FinalPlayerMovement : MonoBehaviour {
 		// We apply gravity manually for more tuning control
 		rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
 		grounded = false;
-		Debug.Log(rigidbody.velocity.magnitude);
 
 		if (line1) {
 			Vector3 heading = transform.position - left_hand.transform.position;
