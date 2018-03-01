@@ -124,6 +124,15 @@ public class FinalPlayerMovement : MonoBehaviour {
 			}
 		}
 
+		if (grounded) { // Jump/bhop check
+			if (canJump && Input.GetButton("Jump")) {
+				rigidbody.velocity *= 1.08f;
+				//rigidbody.velocity.y = 0f;
+				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
+				grounded = false;
+			}
+		}
+
 		// Slow motion
 		if (Input.GetButton("Fire3")) {
 			Time.timeScale = 0.15f;
@@ -143,15 +152,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 				transform.position = new Vector3(0f, 2.5f, 0f);
 			}
 		}
-		if (grounded) { // Jump/bhop check
-			if (canJump && Input.GetButton("Jump")) {
-				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
-				grounded = false;
-			}
-		}
 		if (grounded) {  // Separate grounded check so player loses no speed upon hitting the ground if hopping
 			// When on the ground, check if greater than max speed or player not inputting movement
-			if (rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0) {
+			if ((rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0) && !Input.GetButton("Jump")) {
 				// Slide to a stop
 				rigidbody.velocity = (rigidbody.velocity / 1.1f);
 			} else {
@@ -166,7 +169,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 		if (flinging) {
 			if (launch_dir.magnitude > 100) {
-				launch_dir = launch_dir * (90 / launch_dir.magnitude);
+				launch_dir = launch_dir * (100 / launch_dir.magnitude);
 			} else if (launch_dir.magnitude < 30) {
 				launch_dir = launch_dir * (30 / launch_dir.magnitude);
 			}
@@ -179,6 +182,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		// We apply gravity manually for more tuning control
 		rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
 		grounded = false;
+		Debug.Log(rigidbody.velocity.magnitude);
 
 		if (line1) {
 			Vector3 heading = transform.position - left_hand.transform.position;
