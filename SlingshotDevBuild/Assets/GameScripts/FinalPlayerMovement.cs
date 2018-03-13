@@ -21,7 +21,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private float zInput;
 	private float maxGroundSpeed;
 	private Vector3 desired;
-	private GameObject curr_cp; // Last checkpoint hit by player
+	private CheckPointBehaviour curr_cp; // Last checkpoint hit by player
 
 	// Slingshot
 	public GameObject hit_prefab;
@@ -88,7 +88,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		//crosshair changing  per frame if hit or not
 		RaycastHit hit;
 		bool raycastSuccess = false;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag != "Un-tetherable" && hit.transform.gameObject.tag != "Checkpoint") {
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag == "Tetherable") {
 			raycastSuccess = true;
 		}
 		hitImage.SetActive(raycastSuccess);
@@ -179,7 +179,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 		if (transform.position.y <= -50) { // Player has fallen too far, reset to previous checkpoint.
 			if (curr_cp) {
-				transform.position = curr_cp.transform.position;
+				transform.position = curr_cp.transform.position + Vector3.up * 1;
 			} else {
 				transform.position = new Vector3(0f, 2.5f, 0f);
 			}
@@ -292,7 +292,10 @@ public class FinalPlayerMovement : MonoBehaviour {
 		}
 	}
 
-	public void SetCP(GameObject cp) {
-		curr_cp = cp;
+	public void SetCP(CheckPointBehaviour cp) {
+        if (curr_cp == null || cp.index >= curr_cp.index)
+        {
+            curr_cp = cp;
+        }
 	}
 }

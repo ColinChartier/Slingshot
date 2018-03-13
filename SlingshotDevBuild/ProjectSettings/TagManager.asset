@@ -7,6 +7,7 @@ TagManager:
   - Un-tetherable
   - gain-tentacle
   - Checkpoint
+  - Tetherable
   layers:
   - Default
   - TransparentFX
