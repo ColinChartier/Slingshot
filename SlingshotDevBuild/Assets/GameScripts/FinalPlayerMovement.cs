@@ -8,11 +8,11 @@ using UnityEngine;
 public class FinalPlayerMovement : MonoBehaviour {
 
 	private new Rigidbody rigidbody;
-	public float speed = 15.0f;
-	public float gravity = 50.0f;
-	public float maxVelocityChange = 10.0f;
+	public float speed = 1.50f;
+	public float gravity = 5.0f;
+	public float maxVelocityChange = 1.0f;
 	public bool canJump = true;
-	public float jumpHeight = 3.0f;
+	public float jumpHeight = 0.30f;
 	private bool grounded = false;
 
 	// New movement
@@ -194,9 +194,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 				rigidbody.velocity = desired * speed;
 			}
 		} else if (rigidbody.velocity.magnitude < 20) {
-			rigidbody.velocity += desired / 2f;
+			rigidbody.velocity += desired / 20f;
 		} else {
-			rigidbody.velocity += desired / 10f;
+			rigidbody.velocity += desired / 100f;
 		}
 
 		if (flinging) {
