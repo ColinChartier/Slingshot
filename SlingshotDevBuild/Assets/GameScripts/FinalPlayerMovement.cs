@@ -292,10 +292,11 @@ public class FinalPlayerMovement : MonoBehaviour {
 		}
 	}
 
-	public void SetCP(CheckPointBehaviour cp) {
+    public void SetCP(CheckPointBehaviour cp)
+    {
         if (curr_cp == null || cp.index >= curr_cp.index)
         {
             curr_cp = cp;
         }
-	}
+    }
 }
