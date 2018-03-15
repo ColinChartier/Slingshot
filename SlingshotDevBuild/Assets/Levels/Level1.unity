@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1746,7 +1746,7 @@ Prefab:
     - target: {fileID: 54169069002111862, guid: 45f42fc33dbbbf84587d7171307ba17c,
         type: 2}
       propertyPath: m_Drag
-      value: 0.005
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114371900415091688, guid: 45f42fc33dbbbf84587d7171307ba17c,
         type: 2}
@@ -1761,7 +1761,7 @@ Prefab:
     - target: {fileID: 114371900415091688, guid: 45f42fc33dbbbf84587d7171307ba17c,
         type: 2}
       propertyPath: maxVelocityChange
-      value: 1.5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 114371900415091688, guid: 45f42fc33dbbbf84587d7171307ba17c,
         type: 2}
@@ -1791,6 +1791,40 @@ Prefab:
     - target: {fileID: 124918846351330712, guid: 45f42fc33dbbbf84587d7171307ba17c,
         type: 2}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 54169069002111862, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 54169069002111862, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_CollisionDetection
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 136427720892028184, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_Radius
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 136427720892028184, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_Height
+      value: 2.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4915121762110330, guid: 45f42fc33dbbbf84587d7171307ba17c, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -1.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 54169069002111862, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 54169069002111862, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_Interpolate
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

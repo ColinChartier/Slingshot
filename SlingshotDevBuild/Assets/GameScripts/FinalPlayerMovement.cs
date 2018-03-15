@@ -72,11 +72,13 @@ public class FinalPlayerMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Allow people to remove their cursor (colin says: very important! I can't develop without this)
-		if (Input.GetKeyDown(KeyCode.Escape)) {
+		if (Input.GetKeyDown(KeyCode.P)) {
 			if (Cursor.lockState == CursorLockMode.None) {
 				Cursor.lockState = CursorLockMode.Locked;
+				Cursor.visible = false;
 			} else {
 				Cursor.lockState = CursorLockMode.None;
+				Cursor.visible = true;
 			}
 		}
 
@@ -85,7 +87,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		zInput = Input.GetAxis("Vertical");
 		desired = transform.TransformDirection(new Vector3(xInput, 0, zInput));
 
-		//crosshair changing  per frame if hit or not
+		//crosshair changing per frame if hit or not
 		RaycastHit hit;
 		bool raycastSuccess = false;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag == "Tetherable") {
@@ -133,15 +135,6 @@ public class FinalPlayerMovement : MonoBehaviour {
 			}
 		}
 
-		if (grounded) { // Jump/bhop check
-			if (canJump && Input.GetButton("Jump")) {
-				rigidbody.velocity *= 1.08f;
-				//rigidbody.velocity.y = 0f;
-				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
-				grounded = false;
-			}
-		}
-
 		// Slow motion
 		if (Input.GetButton("Fire3")) {
 			Time.timeScale = 0.15f;
@@ -185,24 +178,34 @@ public class FinalPlayerMovement : MonoBehaviour {
 				transform.position = new Vector3(0f, 2.5f, 0f);
 			}
 		}
-		if (grounded) {  // Separate grounded check so player loses no speed upon hitting the ground if hopping
-			// When on the ground, check if greater than max speed or player not inputting movement
-			if ((rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0) && !Input.GetButton("Jump")) {
+
+		if (grounded) { // Jump/bhop check
+			if (canJump && Input.GetButton("Jump")) {
+				rigidbody.velocity *= 1.08f;
+				//rigidbody.velocity.y = 0f;
+				rigidbody.velocity += new Vector3(0, CalculateJumpVerticalSpeed(), 0);
+				grounded = false;
+			}
+		}
+
+		if (grounded && !Input.GetButton("Jump")) {  // Separate grounded check so player loses no speed upon hitting the ground if hopping
+													 // When on the ground, check if greater than max speed or player not inputting movement
+			if ((rigidbody.velocity.magnitude > maxGroundSpeed || desired.magnitude == 0)) {
 				// Slide to a stop
 				rigidbody.velocity = (rigidbody.velocity / 1.1f);
 			} else {
 				// Not going fast enough, just move at a direct speed
 				rigidbody.velocity = desired * speed;
 			}
-		} else if (rigidbody.velocity.magnitude < 20) {
-			rigidbody.velocity += desired / 20f;
+		} else if (rigidbody.velocity.magnitude < maxGroundSpeed) {
+			rigidbody.velocity += desired / 10f;
 		} else {
-			rigidbody.velocity += desired / 100f;
+			rigidbody.velocity += desired / 60f;
 		}
 
 		if (flinging) {
-			if (launch_dir.magnitude > 100) {
-				launch_dir = launch_dir * (100 / launch_dir.magnitude);
+			if (launch_dir.magnitude > 80) {
+				launch_dir = launch_dir * (80 / launch_dir.magnitude);
 			} else if (launch_dir.magnitude < 30) {
 				launch_dir = launch_dir * (30 / launch_dir.magnitude);
 			}
@@ -239,6 +242,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 	void OnCollisionStay(Collision info) {
 		ContactPoint contact = info.contacts[0];
 		if (contact.point.y < groundcheck.transform.position.y) {
+		//if (Physics.Raycast(transform.position, transform.position - groundcheck.transform.position)) {
 			grounded = true;
 		} else {
 			rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, contact.normal);
