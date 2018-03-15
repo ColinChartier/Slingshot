@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -9,11 +11,11 @@ using UnityEngine.UI;
 public class FinalPlayerMovement : MonoBehaviour {
 
 	private new Rigidbody rigidbody;
-	public float speed = 1.50f;
-	public float gravity = 5.0f;
-	public float maxVelocityChange = 1.0f;
+	public float speed = 7.0f;
+	public float gravity = 25.0f;
+	public float maxVelocityChange = 7.0f;
 	public bool canJump = true;
-	public float jumpHeight = 0.30f;
+	public float jumpHeight = 1.50f;
 	private bool grounded = false;
 
 	// New movement
@@ -67,6 +69,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private int land_delay;
 	public AudioClip fling;
 	private float fling_vol = 0.4f;
+	
 	// LE STATISTICS (confidence interval amirite)
 	private float timeOnGround = 0.0f;
 	private float totalTime = 0.0f;
@@ -80,6 +83,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		rigidbody.freezeRotation = true;
 		rigidbody.useGravity = false;
 		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 
 		leftTentacle = leftHand.GetComponent<LineRenderer>();
 		rightTentacle = rightHand.GetComponent<LineRenderer>();
@@ -102,6 +106,11 @@ public class FinalPlayerMovement : MonoBehaviour {
 				Cursor.visible = true;
 			}
 		}
+
+		if (Input.GetKeyDown(KeyCode.R)) {
+			SceneManager.LoadScene(1);
+		}
+			
 
 		// New movement
 		xInput = Input.GetAxis("Horizontal");
