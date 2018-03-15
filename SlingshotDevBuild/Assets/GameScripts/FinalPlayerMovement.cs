@@ -206,7 +206,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 				transform.position = curr_cp.transform.position + Vector3.up * 1;
                 transform.rotation = curr_cp.transform.rotation;
 			} else {
-				transform.position = new Vector3(0f, 2.5f, 0f);
+				transform.position = new Vector3(92.05f, -7, 0f);
 			}
 			playersounds.PlayOneShot(fail, fail_vol);
 		}
