@@ -53,8 +53,23 @@ public class FinalPlayerMovement : MonoBehaviour {
 	public GameObject hitImage;
 	public GameObject nonhitImage;
 
+	//Sounds
+	private AudioSource playersounds;
+	public AudioClip fail;
+	private float fail_vol = 0.4f;
+	public AudioClip grab;
+	private float grab_vol = 0.2f;
+	public AudioClip land_light;
+	private float land_light_vol = 0.2f;
+	public AudioClip land_heavy;
+	private float land_heavy_vol = 0.5f;
+	private int land_delay;
+	public AudioClip fling;
+	private float fling_vol = 0.4f;
+
 	// Use this for initialization
 	void Start () {
+		playersounds = GetComponent<AudioSource>();
 		rigidbody = GetComponent<Rigidbody>();
 		rigidbody.freezeRotation = true;
 		rigidbody.useGravity = false;
@@ -147,6 +162,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
+		if (land_delay > 0) {
+			land_delay--;
+		}
 		// Check for releasing arms
 		if (released_right || released_left) {
 			counter++;
@@ -177,6 +195,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 			} else {
 				transform.position = new Vector3(0f, 2.5f, 0f);
 			}
+			playersounds.PlayOneShot(fail, fail_vol);
 		}
 
 		if (grounded) { // Jump/bhop check
@@ -242,7 +261,16 @@ public class FinalPlayerMovement : MonoBehaviour {
 	void OnCollisionStay(Collision info) {
 		ContactPoint contact = info.contacts[0];
 		if (contact.point.y < groundcheck.transform.position.y) {
-		//if (Physics.Raycast(transform.position, transform.position - groundcheck.transform.position)) {
+			// Landing sounds should definitely not go here, need some sort of check, might be tough.
+			/*if (land_delay <= 0 && grounded == false) { 
+				if (rigidbody.velocity.magnitude > maxGroundSpeed * 3) {
+					playersounds.PlayOneShot(land_heavy, land_heavy_vol);
+					land_delay = 10;
+				} else {
+					playersounds.PlayOneShot(land_light, land_light_vol);
+					land_delay = 10;
+				}
+			}*/ 
 			grounded = true;
 		} else {
 			rigidbody.velocity = Vector3.ProjectOnPlane(rigidbody.velocity, contact.normal);
@@ -263,6 +291,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 			hit_object = Instantiate(hit_prefab, hit.point, new Quaternion());
 			hit_object.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 			hit_object.transform.parent = hit.transform;
+			playersounds.PlayOneShot(grab, grab_vol);
 			return true;
 		} else {
 			hit_object = null;
@@ -280,6 +309,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		line2 = false;
 		DestroyObject(left_hand);
 		DestroyObject(right_hand);
+		playersounds.PlayOneShot(fling, fling_vol);
 	}
 
 	private void DisplayRope() {
