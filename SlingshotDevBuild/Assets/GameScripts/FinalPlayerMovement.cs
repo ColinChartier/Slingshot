@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -66,6 +67,11 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private int land_delay;
 	public AudioClip fling;
 	private float fling_vol = 0.4f;
+	// LE STATISTICS (confidence interval amirite)
+	private float timeOnGround = 0.0f;
+	private float totalTime = 0.0f;
+	// (the UI)
+	public GameObject statisticsUI;
 
 	// Use this for initialization
 	void Start () {
@@ -159,6 +165,13 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 		// Hook
 		DisplayRope();
+
+        // Lies, damned lies, and statistics
+        if(grounded)
+        {
+            timeOnGround += Time.deltaTime;
+        }
+        totalTime += Time.deltaTime;
 	}
 
 	private void FixedUpdate() {
@@ -333,5 +346,19 @@ public class FinalPlayerMovement : MonoBehaviour {
         {
             curr_cp = cp;
         }
+    }
+
+    public void EndGame()
+    {
+        statisticsUI.SetActive(true);
+        int timeOnGroundMins = (int)Mathf.Floor(timeOnGround / 60);
+        float timeOnGroundSecs = timeOnGround - 60.0f * timeOnGroundMins;
+        string timeOnGroundStr = "Ground time: " + timeOnGroundMins + "m " + timeOnGroundSecs.ToString("0.##") + "s";
+
+        int timeMins = (int)Mathf.Floor(totalTime / 60);
+        float timeSecs = totalTime - timeMins * 60.0f;
+        string totalTimeStr = "Time: " + timeMins + "m " + timeSecs.ToString("0.##") + "s";
+
+        statisticsUI.GetComponentInChildren<Text>().text = timeOnGroundStr + "\n" + totalTimeStr;
     }
 }
