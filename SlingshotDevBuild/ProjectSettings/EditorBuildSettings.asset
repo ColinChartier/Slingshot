@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/derp.unity
+    path: Assets/Levels/MainMenu.unity
     guid: 9832d3014c48e8d45a1922ad1e2f6aa0
   - enabled: 1
     path: Assets/Levels/Level1.unity

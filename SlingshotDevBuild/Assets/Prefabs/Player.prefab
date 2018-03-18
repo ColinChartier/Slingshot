@@ -387,7 +387,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -451,6 +451,13 @@ MonoBehaviour:
   rightHand: {fileID: 4423468220468364}
   hitImage: {fileID: 1454583226987318}
   nonhitImage: {fileID: 1978531706071060}
+  outOfRangeImage: {fileID: 0}
+  fail: {fileID: 0}
+  grab: {fileID: 0}
+  land_light: {fileID: 0}
+  land_heavy: {fileID: 0}
+  fling: {fileID: 0}
+  statisticsUI: {fileID: 0}
 --- !u!114 &114383952280505820
 MonoBehaviour:
   m_ObjectHideFlags: 1

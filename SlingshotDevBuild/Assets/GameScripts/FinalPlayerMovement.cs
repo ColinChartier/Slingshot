@@ -55,6 +55,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 	public GameObject hitImage;
 	public GameObject nonhitImage;
+    public GameObject outOfRangeImage;
 
 	//Sounds
 	private AudioSource playersounds;
@@ -120,10 +121,18 @@ public class FinalPlayerMovement : MonoBehaviour {
 		//crosshair changing per frame if hit or not
 		RaycastHit hit;
 		bool raycastSuccess = false;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100) && hit.transform.gameObject.tag == "Tetherable") {
-			raycastSuccess = true;
+        bool outofrange = false;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 5000) && hit.transform.gameObject.tag == "Tetherable")
+        {
+            raycastSuccess = true;
+        }
+        if (raycastSuccess && hit.distance > 100)
+        {
+            outofrange = true;
+        
 		}
-		hitImage.SetActive(raycastSuccess);
+        outOfRangeImage.SetActive(outofrange);
+        hitImage.SetActive(raycastSuccess && !outofrange);
 		nonhitImage.SetActive(!raycastSuccess);
 
 		// Slingshot Modifications
