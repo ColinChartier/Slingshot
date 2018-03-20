@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4415567509107946}
   - component: {fileID: 33412628449633864}
-  - component: {fileID: 65515509070130004}
   - component: {fileID: 23026972145091192}
   m_Layer: 0
   m_Name: ThinLaser
@@ -40,7 +39,7 @@ GameObject:
   - component: {fileID: 33226039729923740}
   - component: {fileID: 135400291738458196}
   - component: {fileID: 23812319395163502}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Thin Monkey Handhold
   m_TagString: Tetherable
   m_Icon: {fileID: 0}
@@ -58,7 +57,7 @@ GameObject:
   - component: {fileID: 33663225750224542}
   - component: {fileID: 136141505122488272}
   - component: {fileID: 23383202369182196}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Tetherable
   m_Icon: {fileID: 0}
@@ -74,7 +73,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4430311455293444}
   - component: {fileID: 33044323995800078}
-  - component: {fileID: 65401414176177616}
   - component: {fileID: 23462867462914328}
   m_Layer: 0
   m_Name: Top Block
@@ -302,30 +300,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1721178916437684}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &65401414176177616
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1902532508673006}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &65515509070130004
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1042529055515742}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135400291738458196
 SphereCollider:
   m_ObjectHideFlags: 1

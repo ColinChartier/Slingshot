@@ -32,6 +32,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 	public bool line2;
 	private bool flinging;
 	private Vector3 launch_dir; // coord1 + coord2
+	private int mask = 1 << 8; // bitshift to get the layermask for the "Grabbable" layer
 
 	private GameObject right_hand; // replaces coord1
 	private GameObject left_hand;  // replaces coord2
@@ -76,9 +77,15 @@ public class FinalPlayerMovement : MonoBehaviour {
 	private float totalTime = 0.0f;
 	// (the UI)
 	public GameObject statisticsUI;
+	private Canvas canvas;
+	private RectTransform CanvasRect;
+	private Vector2 uiOffset;
 
 	// Use this for initialization
 	void Start () {
+		canvas = hitImage.GetComponentInParent<Canvas>();
+		CanvasRect = canvas.GetComponent<RectTransform>();
+		uiOffset = new Vector2((float)CanvasRect.sizeDelta.x / 2f, (float)CanvasRect.sizeDelta.y / 2f);
 		playersounds = GetComponent<AudioSource>();
 		rigidbody = GetComponent<Rigidbody>();
 		rigidbody.freezeRotation = true;
@@ -94,7 +101,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 		maxGroundSpeed = new Vector3(speed, 0, speed).magnitude;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		//Allow people to remove their cursor (colin says: very important! I can't develop without this)
@@ -122,6 +129,27 @@ public class FinalPlayerMovement : MonoBehaviour {
 		RaycastHit hit;
 		bool raycastSuccess = false;
         bool outofrange = false;
+
+		if (Physics.SphereCast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height/2)), 7f, out hit, 200f, mask) && hit.transform.gameObject.tag == "Tetherable") {
+			raycastSuccess = true;
+		}
+		if (raycastSuccess && hit.distance > 100) {
+			outofrange = true;
+		}
+		
+		if (raycastSuccess) {
+			Vector2 viewPosition = Camera.main.WorldToViewportPoint(hit.point);
+			Vector2 newPos = new Vector2(viewPosition.x * CanvasRect.sizeDelta.x, viewPosition.y * CanvasRect.sizeDelta.y);
+			hitImage.GetComponent<RectTransform>().localPosition = newPos - uiOffset;
+			nonhitImage.GetComponent<RectTransform>().localPosition = newPos - uiOffset;
+			outOfRangeImage.GetComponent<RectTransform>().localPosition = newPos - uiOffset;
+		} else {
+			hitImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
+			nonhitImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
+			outOfRangeImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
+		}
+
+		/* Old single raycast, no aim assist.
         if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 5000) && hit.transform.gameObject.tag == "Tetherable")
         {
             raycastSuccess = true;
@@ -129,8 +157,8 @@ public class FinalPlayerMovement : MonoBehaviour {
         if (raycastSuccess && hit.distance > 100)
         {
             outofrange = true;
-        
-		}
+		}*/
+
         outOfRangeImage.SetActive(outofrange);
         hitImage.SetActive(raycastSuccess && !outofrange);
 		nonhitImage.SetActive(!raycastSuccess);
@@ -316,7 +344,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 	private bool SendLine(out GameObject hit_object) {
 		RaycastHit hit;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit, 100)) {
+		if (Physics.SphereCast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), 7f, out hit, 100f, mask)) {
 			Debug.Log("Line attached");
 			// Add hand object as child of hit object
 			hit_object = Instantiate(hit_prefab, hit.point, new Quaternion());

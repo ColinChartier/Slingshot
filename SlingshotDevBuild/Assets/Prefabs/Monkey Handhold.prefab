@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33746189214711622}
   - component: {fileID: 65524248393773976}
   - component: {fileID: 23791949199976722}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 33065961273718392}
   - component: {fileID: 65395665043255418}
   - component: {fileID: 23237584856265430}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 33399032453805590}
   - component: {fileID: 65601657385350176}
   - component: {fileID: 23845566091150558}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ThinLaser (1)
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 33426418056471986}
   - component: {fileID: 65235661820346482}
   - component: {fileID: 23254653989842946}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Top Block
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 33974294799604228}
   - component: {fileID: 65004837569945540}
   - component: {fileID: 23696725623878840}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ThinLaser
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 33622821562450570}
   - component: {fileID: 136366672765109560}
   - component: {fileID: 23727103621577598}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Tetherable
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 33568866815660786}
   - component: {fileID: 135753544889586354}
   - component: {fileID: 23861029792742258}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Monkey Handhold
   m_TagString: Tetherable
   m_Icon: {fileID: 0}
@@ -146,7 +146,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4584293247186950}
   - component: {fileID: 33350187416920564}
-  - component: {fileID: 65261240615896252}
   - component: {fileID: 23595800076210570}
   m_Layer: 0
   m_Name: End Cap
@@ -166,7 +165,7 @@ GameObject:
   - component: {fileID: 33826664226113464}
   - component: {fileID: 65811720418356394}
   - component: {fileID: 23578900604170068}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ThinLaser (2)
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -685,18 +684,6 @@ BoxCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1079701350008636}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &65261240615896252
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1565385302231408}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1

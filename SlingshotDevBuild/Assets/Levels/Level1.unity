@@ -904,7 +904,17 @@ GameObject:
   m_PrefabParentObject: {fileID: 1591335248153646, guid: 45f42fc33dbbbf84587d7171307ba17c,
     type: 2}
   m_PrefabInternal: {fileID: 289441723}
---- !u!114 &133320850
+--- !u!192 &133320855
+OcclusionArea:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 133320849}
+  serializedVersion: 2
+  m_Size: {x: 20, y: 20, z: 20}
+  m_Center: {x: 0, y: 0, z: 0}
+  m_IsViewVolume: 1
+--- !u!114 &133320856
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -916,16 +926,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 40266320eb7eeba48b3419b6edf21b50, type: 2}
---- !u!192 &133320855
-OcclusionArea:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 133320849}
-  serializedVersion: 2
-  m_Size: {x: 20, y: 20, z: 20}
-  m_Center: {x: 0, y: 0, z: 0}
-  m_IsViewVolume: 1
 --- !u!1001 &143000340
 Prefab:
   m_ObjectHideFlags: 0
@@ -1870,6 +1870,15 @@ Prefab:
       propertyPath: outOfRangeImage
       value: 
       objectReference: {fileID: 2069948193}
+    - target: {fileID: 224417148689106014, guid: 45f42fc33dbbbf84587d7171307ba17c,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1360430993028544, guid: 45f42fc33dbbbf84587d7171307ba17c, type: 2}
+      propertyPath: m_TagString
+      value: MainCanvas
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 45f42fc33dbbbf84587d7171307ba17c, type: 2}
   m_IsPrefabParent: 0
@@ -11185,7 +11194,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2069948193}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 6.3614916e-12}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 975623155}
@@ -11193,7 +11202,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0002746582, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2069948195
