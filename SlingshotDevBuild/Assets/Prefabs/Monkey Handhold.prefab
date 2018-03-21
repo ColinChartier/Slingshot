@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33746189214711622}
   - component: {fileID: 65524248393773976}
   - component: {fileID: 23791949199976722}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 33065961273718392}
   - component: {fileID: 65395665043255418}
   - component: {fileID: 23237584856265430}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 33399032453805590}
   - component: {fileID: 65601657385350176}
   - component: {fileID: 23845566091150558}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: ThinLaser (1)
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 33426418056471986}
   - component: {fileID: 65235661820346482}
   - component: {fileID: 23254653989842946}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Top Block
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 33974294799604228}
   - component: {fileID: 65004837569945540}
   - component: {fileID: 23696725623878840}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: ThinLaser
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 33826664226113464}
   - component: {fileID: 65811720418356394}
   - component: {fileID: 23578900604170068}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: ThinLaser (2)
   m_TagString: Un-tetherable
   m_Icon: {fileID: 0}
