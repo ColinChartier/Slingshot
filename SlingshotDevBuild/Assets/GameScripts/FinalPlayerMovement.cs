@@ -104,6 +104,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetButtonDown("Submit") && statisticsUI.activeSelf) {
+			SceneManager.LoadScene(0);
+		}
 		//Allow people to remove their cursor (colin says: very important! I can't develop without this)
 		if (Input.GetKeyDown(KeyCode.P)) {
 			if (Cursor.lockState == CursorLockMode.None) {
@@ -175,6 +178,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 			if (Input.GetButtonUp("Fire1")) {
 				if (!line2) {
 					line1 = false;
+					released_left = true;
 					DestroyObject(left_hand);
 					Debug.Log("Detach line 1");
 				} else {
@@ -195,6 +199,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 				if (!line1) {
 					line2 = false;
 					DestroyObject(right_hand);
+					released_right = true;
 				} else {
 					released_right = true;
 					// LaunchPlayer(); (old)
@@ -406,8 +411,5 @@ public class FinalPlayerMovement : MonoBehaviour {
         string totalTimeStr = "Time: " + timeMins + "m " + timeSecs.ToString("0.##") + "s";
 
         statisticsUI.GetComponentInChildren<Text>().text = timeOnGroundStr + "\n" + totalTimeStr;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 }
