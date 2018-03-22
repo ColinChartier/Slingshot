@@ -406,5 +406,8 @@ public class FinalPlayerMovement : MonoBehaviour {
         string totalTimeStr = "Time: " + timeMins + "m " + timeSecs.ToString("0.##") + "s";
 
         statisticsUI.GetComponentInChildren<Text>().text = timeOnGroundStr + "\n" + totalTimeStr;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
