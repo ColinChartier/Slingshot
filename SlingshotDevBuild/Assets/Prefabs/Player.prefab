@@ -643,7 +643,7 @@ MonoBehaviour:
   m_ConstantFog: 0
   m_HeightFogAmount: 10
   m_HeightFogExponent: 1.7
-  m_HeightFogOffset: -25
+  m_HeightFogOffset: -30
   m_NoiseFogAmount: 0
   m_NoiseFogScale: 1
   m_Wind: {fileID: 0}
