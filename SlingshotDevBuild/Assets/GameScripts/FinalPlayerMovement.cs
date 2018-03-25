@@ -401,7 +401,10 @@ public class FinalPlayerMovement : MonoBehaviour {
 
     public void EndGame()
     {
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
         statisticsUI.SetActive(true);
+
         int timeOnGroundMins = (int)Mathf.Floor(timeOnGround / 60);
         float timeOnGroundSecs = timeOnGround - 60.0f * timeOnGroundMins;
         string timeOnGroundStr = "Ground time: " + timeOnGroundMins + "m " + timeOnGroundSecs.ToString("0.##") + "s";
