@@ -225,8 +225,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 	}
 
 	private bool raycastTargets(out RaycastHit hit) {
+		Ray viewportRay = Camera.main.ScreenPointToRay (new Vector2 (Screen.width / 2, Screen.height / 2));
 		RaycastHit[] hits = Physics.SphereCastAll (
-			                    Camera.main.ScreenPointToRay (new Vector2 (Screen.width / 2, Screen.height / 2)), 
+			                    viewportRay, 
 			                    7f, 
 			                    500f, 
 			                    mask
@@ -256,12 +257,16 @@ public class FinalPlayerMovement : MonoBehaviour {
 			if (hit.distance > tetherRange && hits [i].distance <= tetherRange) {
 				//Nobody would rather target something that is out of range.
 				hit = hits [i];
-				currentHitExists = true;
 				continue;
 			}
-		}
-		if (currentHitExists) {
-			Debug.Log ("Current hit exists, is " + hit.transform.gameObject.name + ", distance is: " + hit.distance);
+			float currHitAngle = Vector3.Angle (viewportRay.direction, hit.transform.position - viewportRay.origin);
+			float newHitAngle = Vector3.Angle (viewportRay.direction, hits [i].transform.position - viewportRay.origin);
+			if (currHitAngle > 30 && newHitAngle < 5 && hits [i].distance <= tetherRange) {
+				//The player is pointing almost directly at something, but we are currently targetting something closer.
+				//They probably want the thing they are aiming at.
+				hit = hits [i];
+				continue;
+			}
 		}
 		return currentHitExists;
 	}
