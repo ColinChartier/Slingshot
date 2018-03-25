@@ -15,6 +15,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 	public float gravity = 25.0f;
 	public float maxVelocityChange = 7.0f;
 	public bool canJump = true;
+	public float tetherRange = 100f;
 	public float jumpHeight = 1.50f;
 	private bool grounded = false;
 
@@ -132,11 +133,9 @@ public class FinalPlayerMovement : MonoBehaviour {
 		RaycastHit hit;
 		bool raycastSuccess = false;
         bool outofrange = false;
+		raycastSuccess = raycastTargets (out hit);
 
-		if (Physics.SphereCast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height/2)), 7f, out hit, 200f, mask) && hit.transform.gameObject.tag == "Tetherable") {
-			raycastSuccess = true;
-		}
-		if (raycastSuccess && hit.distance > 100) {
+		if (raycastSuccess && hit.distance > tetherRange) {
 			outofrange = true;
 		}
 		
@@ -223,6 +222,48 @@ public class FinalPlayerMovement : MonoBehaviour {
             timeOnGround += Time.deltaTime;
         }
         totalTime += Time.deltaTime;
+	}
+
+	private bool raycastTargets(out RaycastHit hit) {
+		RaycastHit[] hits = Physics.SphereCastAll (
+			                    Camera.main.ScreenPointToRay (new Vector2 (Screen.width / 2, Screen.height / 2)), 
+			                    7f, 
+			                    500f, 
+			                    mask
+		                    );
+		bool currentHitExists = false;
+		hit = new RaycastHit ();
+		for(int i = 0; i < hits.Length; i++) {
+			if (hits [i].transform.gameObject.tag != "Tetherable") {
+				continue;
+			}
+			if (hits [i].distance == 0) {
+				continue;
+			}
+			RaycastHit actualHit;
+			if (!Physics.Raycast (transform.position, hits [i].transform.position - transform.position, out actualHit, 600f) 
+				|| actualHit.transform.gameObject != hits[i].transform.gameObject
+			) {
+				//Something is in the way
+				continue;
+			}
+			//TODO we can implement some logic here to avoid locking on to close things
+			if(!currentHitExists) {
+				hit = hits [i];
+				currentHitExists = true;
+				continue;
+			}
+			if (hit.distance > tetherRange && hits [i].distance <= tetherRange) {
+				//Nobody would rather target something that is out of range.
+				hit = hits [i];
+				currentHitExists = true;
+				continue;
+			}
+		}
+		if (currentHitExists) {
+			Debug.Log ("Current hit exists, is " + hit.transform.gameObject.name + ", distance is: " + hit.distance);
+		}
+		return currentHitExists;
 	}
 
 	private void FixedUpdate() {
@@ -349,8 +390,8 @@ public class FinalPlayerMovement : MonoBehaviour {
 
 	private bool SendLine(out GameObject hit_object) {
 		RaycastHit hit;
-		if (Physics.SphereCast(Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), 7f, out hit, 100f, mask)) {
-			Debug.Log("Line attached");
+		if (raycastTargets(out hit) && hit.distance <= tetherRange) {
+			Debug.Log("Line attached to " + hit.transform.gameObject.name);
 			// Add hand object as child of hit object
 			hit_object = Instantiate(hit_prefab, hit.point, new Quaternion());
 			hit_object.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
