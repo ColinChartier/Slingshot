@@ -975,11 +975,9 @@ MonoBehaviour:
 
     RS - Look
 
-    Triangle / Y - Jump
+    Triangle - Jump
 
-    L1/R1 - Tether
-
-    R - Reset Scene'
+    L1/R1 - Tether'
 --- !u!114 &114758794907430778
 MonoBehaviour:
   m_ObjectHideFlags: 1
