@@ -120,10 +120,13 @@ public class FinalPlayerMovement : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.R)) {
-			SceneManager.LoadScene(1);
+		// Main Menu and Reset Buttons
+		if (Input.GetButtonDown("Menu")) {
+			SceneManager.LoadScene(0);
 		}
-			
+		if (Input.GetButtonDown("Reset")) {
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		}
 
 		// New movement
 		xInput = Input.GetAxis("Horizontal");
