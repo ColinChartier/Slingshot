@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 
@@ -119,10 +120,13 @@ public class FinalPlayerMovement : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.R)) {
-			SceneManager.LoadScene(1);
+		// Main Menu and Reset Buttons
+		if (Input.GetButtonDown("Menu")) {
+			SceneManager.LoadScene(0);
 		}
-			
+		if (Input.GetButtonDown("Reset")) {
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		}
 
 		// New movement
 		xInput = Input.GetAxis("Horizontal");
@@ -450,6 +454,7 @@ public class FinalPlayerMovement : MonoBehaviour {
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
         statisticsUI.SetActive(true);
+        string name = NamesGenerator.GetRandomName();
 
         int timeOnGroundMins = (int)Mathf.Floor(timeOnGround / 60);
         float timeOnGroundSecs = timeOnGround - 60.0f * timeOnGroundMins;
@@ -459,6 +464,27 @@ public class FinalPlayerMovement : MonoBehaviour {
         float timeSecs = totalTime - timeMins * 60.0f;
         string totalTimeStr = "Time: " + timeMins + "m " + timeSecs.ToString("0.##") + "s";
 
-        statisticsUI.GetComponentInChildren<Text>().text = timeOnGroundStr + "\n" + totalTimeStr;
+        string highScoreString = "Look for a high score with the name " + name + "!";
+
+        statisticsUI.GetComponentInChildren<Text>().text = timeOnGroundStr + "\n" + totalTimeStr + "\n" + highScoreString;
+        SubmitHighScore(totalTime, timeOnGround, name);
+    }
+
+    public void SubmitHighScore(float finishTime, float timeOnGround, string name)
+    {
+        WWW www;
+        Hashtable postHeader = new Hashtable();
+        postHeader.Add("Content-Type", "application/json");
+
+        // convert json string to byte
+        var formData = System.Text.Encoding.UTF8.GetBytes(
+            "{\"name\": \"" + name + "\", " +
+            "\"finish_time\": \"" + finishTime + "\", " + 
+            "\"ground_time\": \"" + timeOnGround + "\", " + 
+            "\"level\": \"" + SceneManager.GetActiveScene().buildIndex + "\"}"
+            );
+
+        www = new WWW("https://www.colinchartier.com/404/highscores", formData, postHeader);
+        Debug.Log("Got data: " + www.text);
     }
 }
